@@ -487,6 +487,8 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
 .tp-table th, .tp-table td { padding: 8px 10px; border-bottom: 2px solid var(--sky); text-align: center; vertical-align: middle; }
 .tp-table thead th { background: var(--sky-deep); font-size: 0.9rem; line-height: 1.15; }
 .tp-table th[scope="row"] { text-align: left; position: sticky; left: 0; background: #fff; }
+.tp-table .tp-own > th, .tp-table .tp-own > td { background: #fff6d6 !important; }
+.tp-you { display: inline-block; background: var(--sun); border-radius: 8px; padding: 2px 8px; margin-right: 6px; font-weight: 700; }
 .tp-table .none { color: #71858f; }
 .tp-name { border: 0; background: none; padding: 6px 4px; font-weight: 700; text-align: left; text-decoration: underline; text-underline-offset: 4px; white-space: nowrap; }
 .tp-cell { display: inline-flex; flex-direction: column; align-items: center; min-width: 86px; border-radius: 10px; padding: 3px 8px; }
@@ -897,7 +899,8 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       tpNoClass: 'Сыныпсыз',
       whoRobotPc: 'Сәлем! Мен Бәкөнтаймын. Компьютеріңнің нөмірін таңда.',
       whoErrorPc: 'Компьютеріңнің нөмірін таңда',
-      tpDemo: 'Демо: бұл сыныптың нәтижелері ойдан шығарылған. Нақты сабақта нәтиже Google кестесіне өзі түседі.',
+      tpDemo: 'Демо: тапсырма орындасаңыз, нәтижеңіз бірінші жолда шығады. Қалған сынып ойдан шығарылған. Демо Google кестесіне ештеңе жібермейді, нақты сабақта нәтиже кестеге өзі түседі.',
+      tpYou: 'Сіз',
       tpHere: 'Мұнда осы компьютердегі нәтижелер. Бүкіл сынып Google кестесінде көрінеді.',
       tpEmpty: 'Әзірге нәтиже жоқ.',
       tpPupil: 'Оқушы',
@@ -1231,7 +1234,8 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       tpNoClass: 'Без класса',
       whoRobotPc: 'Привет! Я Бәкөнтай. Выбери номер своего компьютера.',
       whoErrorPc: 'Выбери номер своего компьютера',
-      tpDemo: 'Демо: результаты этого класса вымышлены. На реальном уроке они сами приходят в Google-таблицу.',
+      tpDemo: 'Демо: выполните задание, и ваш результат появится в первой строке. Остальной класс вымышлен. Демо ничего не отправляет в Google-таблицу, на реальном уроке результаты приходят туда сами.',
+      tpYou: 'Вы',
       tpHere: 'Здесь результаты этого компьютера. Весь класс виден в Google-таблице.',
       tpEmpty: 'Результатов пока нет.',
       tpPupil: 'Ученик',
@@ -1565,7 +1569,8 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       tpNoClass: 'No class',
       whoRobotPc: 'Hello! I am Bakontai. Choose your computer number.',
       whoErrorPc: 'Choose your computer number',
-      tpDemo: 'Demo: the results of this class are made up. In a real lesson they go to the Google Sheet by themselves.',
+      tpDemo: 'Demo: do a task and your result will appear in the first row. The rest of the class is made up. The demo sends nothing to the Google Sheet; in a real lesson results go there by themselves.',
+      tpYou: 'You',
       tpHere: 'These are the results of this computer. The whole class is in the Google Sheet.',
       tpEmpty: 'No results yet.',
       tpPupil: 'Pupil',
@@ -3805,7 +3810,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
 
   // Вымышленный класс для демо: одинаковый при каждом открытии, в память не пишется
   const DEMO_LOG = !DEMO ? [] : (function () {
-    const ids = LESSON_STEPS.map(function (x) { return x.id; }).concat(['mouse', 'keyboard']);
+    const ids = ['mouse', 'keyboard'].concat(LESSON_STEPS.map(function (x) { return x.id; }));
     let seed = 2026;
     const rnd = function () { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
     const out = [];
@@ -3829,7 +3834,17 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
     }
     return out;
   })();
-  function allLog() { return DEMO_LOG.concat(Store.data.log); }
+  // Вымышленный ученик с номером компьютера самого зрителя уступает ему место
+  function allLog() {
+    if (!DEMO) return Store.data.log;
+    const own = Store.data.log.map(function (r) { return r.pc; });
+    Object.keys(Store.data.participants).forEach(function (pid) {
+      const p = Store.data.participants[pid];
+      if (Object.keys(p.results).length || Object.keys(p.lessons).length) own.push(p.pc);
+    });
+    return DEMO_LOG.filter(function (r) { return !own.includes(r.pc); }).concat(Store.data.log);
+  }
+  function isOwnDemo(p) { return DEMO && !p.pid.startsWith('demo:'); }
   const Panel = {
     open: false,
     tab: 'results',
@@ -3837,7 +3852,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
     message: null,
 
     columns: function () {
-      return LESSON_STEPS.map(function (x) { return x.id; }).concat(['mouse', 'keyboard']);
+      return ['mouse', 'keyboard'].concat(LESSON_STEPS.map(function (x) { return x.id; }));
     },
 
     show: function (tab) {
@@ -3892,7 +3907,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       });
       return Object.keys(map).map(function (k) { return map[k]; })
         .filter(function (x) { return Object.keys(x.last).length || x.video; })
-        .sort(function (a, b) { return a.cls.localeCompare(b.cls, 'kk') || (a.pc || 99) - (b.pc || 99) || a.name.localeCompare(b.name, 'kk'); });
+        .sort(function (a, b) { return isOwnDemo(b) - isOwnDemo(a) || a.cls.localeCompare(b.cls, 'kk') || (a.pc || 99) - (b.pc || 99) || a.name.localeCompare(b.name, 'kk'); });
     },
     cell: function (r) {
       if (!r) return h('td', { class: 'none' }, '—');
@@ -3927,8 +3942,9 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       cols.forEach(function (id) { head.append(h('th', { t: [id], scope: 'col' })); });
       const tbody = h('tbody');
       rows.forEach((p) => {
-        const tr = h('tr', null,
-          h('th', { scope: 'row' }, h('button', { class: 'tp-name', type: 'button', t: ['whoChip', { who: function () { return pupilLabel(p); } }], on: { click: () => { this.details(p); } } })),
+        const own = isOwnDemo(p);
+        const tr = h('tr', { class: own ? 'tp-own' : '' },
+          h('th', { scope: 'row' }, own ? h('span', { class: 'tp-you', t: ['tpYou'] }) : null, h('button', { class: 'tp-name', type: 'button', t: ['whoChip', { who: function () { return pupilLabel(p); } }], on: { click: () => { this.details(p); } } })),
           h('td', p.video ? { t: ['tpVideo_' + p.video] } : { text: '—', class: 'none' }));
         cols.forEach((id) => { tr.append(this.cell(p.last[id])); });
         tbody.append(tr);
