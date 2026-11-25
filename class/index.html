@@ -196,6 +196,17 @@ button:focus-visible, input:focus-visible {
   padding: 4px 20px; font-size: 1.4rem; background: #fff;
 }
 .note { color: var(--muted); font-size: 0.95rem; }
+.class-row { display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: flex-start; }
+.class-row > div { display: flex; flex-direction: column; gap: 8px; }
+.field.grade { width: 96px; min-height: 56px; text-align: center; font-size: 1.7rem; font-weight: 700; }
+.letter-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.letter-row button { width: 58px; min-height: 56px; border: 4px solid var(--teal); border-radius: 14px; background: #fff; font-size: 1.5rem; font-weight: 700; }
+.letter-row button:hover { background: var(--sky); }
+.letter-row button[aria-pressed="true"] { background: var(--sun); border-color: var(--ink); }
+.tag.chosen { font-size: 1.3rem; font-weight: 700; background: var(--sun); }
+.tag.chosen[hidden] { display: none; }
+.who-form.ask { gap: 10px; padding-top: 18px; padding-bottom: 18px; }
+@media (max-width: 1150px) { .class-row { gap: 12px 18px; } .letter-row { gap: 6px; } .letter-row button { width: 46px; } .field.grade { width: 72px; } }
 .form-error { color: var(--red); font-size: 1.1rem; min-height: 1.4em; }
 .row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
 
@@ -601,6 +612,9 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
   // Версия по ссылке учителя: адрес таблицы и класс приходят после # в ссылке, в коде их нет
   const LINK = Boolean(window.SMART_TEACHER_SETTINGS && window.SMART_TEACHER_SETTINGS.link === true);
   const NO_NAME = DEMO || LINK;
+  // Общая ссылка для всех классов: ребёнок пишет цифру класса и нажимает букву
+  const GRADES = ['2', '3'];
+  const CLASS_LETTERS = ['А', 'Ә', 'Б', 'В', 'Г', 'Д'];
   const STORE_KEY = LINK ? 'smartTeacherClass_v1' : 'smartTeacher_v1';
   const BRAND = 'Smart Teacher'; // имя сайта, не переводится
   const PC_COUNT = 14;
@@ -906,6 +920,12 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       whoErrorPc: 'Компьютеріңнің нөмірін таңда',
       whoRobotLink: 'Сәлем! Мен Бәкөнтаймын. Мұғалім айтқан нөміріңді таңда.',
       whoErrorLink: 'Өз нөміріңді таңда',
+      whoRobotClass: 'Сәлем! Мен Бәкөнтаймын. Сыныбыңды жаз, әрпін және нөміріңді таңда.',
+      whoGrade: 'Нешінші сыныпсың?',
+      whoLetter: 'Сынып әрпін таңда',
+      whoErrorGrade: 'Сыныбыңды жаз: 2 немесе 3',
+      whoErrorLetter: 'Сыныбыңның әрпін таңда',
+      letterAria: '{l} әрпі',
       linkMissing: 'Сілтеме толық емес. Мұғалім жіберген сілтемені толық аш.',
       sendWait: 'Нәтиже мұғалімге жіберілуде…',
       sendOk: 'Нәтиже мұғалімге жіберілді ✓',
@@ -1247,6 +1267,12 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       whoErrorPc: 'Выбери номер своего компьютера',
       whoRobotLink: 'Привет! Я Бәкөнтай. Выбери номер, который назвал учитель.',
       whoErrorLink: 'Выбери свой номер',
+      whoRobotClass: 'Привет! Я Бәкөнтай. Напиши свой класс, выбери букву и номер.',
+      whoGrade: 'В каком ты классе?',
+      whoLetter: 'Выбери букву класса',
+      whoErrorGrade: 'Напиши класс: 2 или 3',
+      whoErrorLetter: 'Выбери букву своего класса',
+      letterAria: 'Буква {l}',
       linkMissing: 'Ссылка неполная. Открой целиком ссылку, которую прислал учитель.',
       sendWait: 'Отправляем результат учителю…',
       sendOk: 'Результат отправлен учителю ✓',
@@ -1588,6 +1614,12 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       whoErrorPc: 'Choose your computer number',
       whoRobotLink: 'Hello! I am Bakontai. Choose the number your teacher gave you.',
       whoErrorLink: 'Choose your number',
+      whoRobotClass: 'Hello! I am Bakontai. Type your grade, then choose the letter and your number.',
+      whoGrade: 'What grade are you in?',
+      whoLetter: 'Choose your class letter',
+      whoErrorGrade: 'Type your grade: 2 or 3',
+      whoErrorLetter: 'Choose the letter of your class',
+      letterAria: 'Letter {l}',
       linkMissing: 'The link is incomplete. Open the whole link your teacher sent.',
       sendWait: 'Sending the result to the teacher…',
       sendOk: 'Result sent to the teacher ✓',
@@ -2135,7 +2167,8 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
     let pc = Store.data.settings.pcNumber; // номер этого компьютера, если учитель его указал
     const robot = createRobot();
     const errorKey = LINK ? 'whoErrorLink' : DEMO ? 'whoErrorPc' : 'whoError';
-    robot.say(LINK ? 'whoRobotLink' : DEMO ? 'whoRobotPc' : 'whoRobot');
+    const askClass = LINK && !linkClass;
+    robot.say(askClass ? 'whoRobotClass' : LINK ? 'whoRobotLink' : DEMO ? 'whoRobotPc' : 'whoRobot');
     const grid = h('div', { class: 'pc-grid', role: 'group', aria: [LINK ? 'whoErrorLink' : 'whoPc'] });
     for (let n = 1; n <= PC_COUNT; n++) {
       grid.append(h('button', {
@@ -2146,31 +2179,65 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
             grid.querySelectorAll('button').forEach(function (b) {
               b.setAttribute('aria-pressed', String(b === e.currentTarget && pc === n));
             });
-            error.textContent = ''; error._text = null;
+            changed();
           }
         }
       }));
     }
+    // Класс: цифру ребёнок пишет сам, букву выбирает
+    const was = askClass ? Store.data.settings.currentClass.split(' ') : [];
+    let letter = CLASS_LETTERS.includes(was[1]) ? was[1] : '';
+    const grade = h('input', { class: 'field grade', id: 'who-grade', type: 'text', inputmode: 'numeric', maxlength: '1', autocomplete: 'off', on: { input: function () { changed(); } } });
+    if (GRADES.includes(was[0])) grade.value = was[0];
+    const letters = h('div', { class: 'letter-row', role: 'group', aria: ['whoLetter'] });
+    CLASS_LETTERS.forEach(function (l) {
+      letters.append(h('button', {
+        type: 'button', text: l, aria: ['letterAria', { l: l }], 'aria-pressed': String(letter === l),
+        on: {
+          click: function (e) {
+            letter = l;
+            letters.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b === e.currentTarget)); });
+            changed();
+          }
+        }
+      }));
+    });
+    const chosen = h('span', { class: 'tag chosen' });
+    function changed() {
+      error.textContent = ''; error._text = null;
+      if (!askClass) return;
+      const g = grade.value.trim();
+      const parts = [(GRADES.includes(g) ? g : '') + (letter ? ' ' + letter : ''), pc ? '№' + pc : ''];
+      chosen.textContent = parts.map(function (x) { return x.trim(); }).filter(Boolean).join(' · ');
+      chosen.hidden = !chosen.textContent;
+    }
+    function refuse(key) {
+      bindText(error, key);
+      robot.say(key, null, 'hint');
+    }
     const input = h('input', { type: 'text', maxlength: '16', autocomplete: 'off', spellcheck: 'false', aria: ['whoNameAria'], id: 'who-name' });
     const error = h('p', { class: 'form-error', role: 'alert' });
     const form = h('form', {
-      class: 'panel who-form', novalidate: true,
+      class: 'panel who-form' + (askClass ? ' ask' : ''), novalidate: true,
       on: {
         submit: function (e) {
           e.preventDefault();
           const name = NO_NAME ? '' : cleanName(input.value);
-          if (!pc && !name) {
-            bindText(error, errorKey);
-            robot.say(errorKey, null, 'hint');
-            return;
-          }
+          const g = grade.value.trim();
+          if (askClass && !GRADES.includes(g)) { refuse('whoErrorGrade'); grade.focus(); return; }
+          if (askClass && !letter) { refuse('whoErrorLetter'); return; }
+          if (!pc && !name) { refuse(errorKey); return; }
+          if (askClass) Store.data.settings.currentClass = g + ' ' + letter;
           Store.select(pc, name);
           showHome();
         }
       }
     },
       h('div', { class: 'who-head' }, h('h1', { t: ['whoTitle'], tabindex: '-1' }),
-        Store.data.settings.currentClass ? h('span', { class: 'tag', t: ['tpClassTag', { c: Store.data.settings.currentClass }] }) : null),
+        askClass ? chosen : Store.data.settings.currentClass ? h('span', { class: 'tag', t: ['tpClassTag', { c: Store.data.settings.currentClass }] }) : null),
+      askClass ? h('div', { class: 'class-row' },
+        h('div', null, h('label', { for: 'who-grade', t: ['whoGrade'] }), grade),
+        h('div', null, h('h2', { t: ['whoLetter'] }), letters)) : null,
       h('h2', { t: [LINK ? 'whoErrorLink' : 'whoPc'] }), grid,
       NO_NAME ? null : h('label', { for: 'who-name', t: ['whoName'] }),
       h('div', { class: 'name-row' }, NO_NAME ? null : input, h('button', { class: 'btn sun', type: 'submit', t: ['whoStart'] })),
@@ -2180,6 +2247,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
     const side = h('div', { class: 'side' });
     side.append.apply(side, robot.nodes);
     side.append(h('div', { class: 'yurt', svg: ART.yurt }));
+    changed();
     show(h('section', { class: 'screen' }, h('div', { class: 'split' }, side, form)), false);
   }
 
@@ -3699,7 +3767,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
     },
     takeClass: function (value) {
       const cls = cleanClass(value);
-      if (!cls || (LINK && linkClass)) return; // класс уже указан в ссылке
+      if (!cls || LINK) return; // по ссылке класс выбирает ребёнок или он указан в ссылке
       if (cls === Store.data.settings.currentClass) { this.pendingClass = null; return; }
       // не мешаем ребёнку: класс меняется только на главном экране, экране выбора и в панели
       if (Panel.open || document.querySelector('.lesson, .who-form')) setCurrentClass(cls);
@@ -3743,9 +3811,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       linkClass = cleanClass(q.get('c'));
       if (linkClass) s.currentClass = linkClass;
       Store.save();
-    } else {
-      linkClass = s.currentClass; // открыли без кода: работаем по прошлой ссылке
-    }
+    } // открыли без кода: работаем по прошлой ссылке, класс ребёнок укажет сам
     return Boolean(s.sheetUrl);
   }
   function showLinkMissing() {
