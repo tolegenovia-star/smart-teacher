@@ -611,7 +611,11 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
     sub: ['Папка', 'Ярлык', 'Документ Microsoft Word', 'Презентация Microsoft PowerPoint', 'Лист Microsoft Excel', 'Текстовый документ']
   };
   // Блок урока: КТЖ, 2-сынып, 3-бөлім «Мультимедиа», 9–10-сабақ
-  const LESSON = { id: 'g2-multimedia', video: 'video/3_Bakontai_video.mp4' };
+  const LESSON = {
+    id: 'g2-multimedia',
+    video: { kk: 'video/3_Bakontai_video.mp4', ru: 'video/word_ru.mp4', en: 'video/word_en.mp4' }
+  };
+  function videoFile() { return LESSON.video[Store.data.lang] || LESSON.video.kk; }
 
   /* =====================================================================
      2. ПЕРЕВОДЫ
@@ -622,6 +626,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       siteLang: 'Сайт тілі:',
       langKkAria: 'Сайт тілі: қазақша',
       langRuAria: 'Сайт тілі: орысша',
+      langEnAria: 'Сайт тілі: ағылшынша',
       change: 'Ауыстыру',
       changeAria: '{who}. Басқа оқушыны таңдау',
       pcLabel: '№{n} компьютер',
@@ -955,6 +960,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       siteLang: 'Язык сайта:',
       langKkAria: 'Язык сайта: казахский',
       langRuAria: 'Язык сайта: русский',
+      langEnAria: 'Язык сайта: английский',
       change: 'Сменить',
       changeAria: '{who}. Выбрать другого ученика',
       pcLabel: 'Компьютер №{n}',
@@ -1281,6 +1287,340 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       gCopied: 'Скопировано',
       gCopyHand: 'Код выделен. Нажмите Ctrl+C.',
       gPrivacy: 'В таблицу уходят класс, номер компьютера и результат. Имя ребёнка не отправляется. Не показывайте адрес детям и в интернете: кто его знает, может добавить записи в таблицу.'
+    },
+
+    en: {
+      tagline: 'The teacher’s digital assistant',
+      siteLang: 'Site language:',
+      langKkAria: 'Site language: Kazakh',
+      langRuAria: 'Site language: Russian',
+      langEnAria: 'Site language: English',
+      change: 'Change',
+      changeAria: '{who}. Choose another pupil',
+      pcLabel: 'Computer {n}',
+
+      whoTitle: 'Who are you?',
+      whoPc: 'Choose your computer number',
+      whoName: 'or type your name',
+      whoNameAria: 'Name',
+      whoNote: 'Type only your first name. No surname needed.',
+      whoStart: 'Start',
+      whoError: 'Choose a number or type your name',
+      whoRobot: 'Hello! I am Bakontai. Choose your number or type your name.',
+      pcAria: 'Computer {n}',
+
+      helloName: 'Hello, {name}! Choose the section your teacher named.',
+      hello: 'Hello! Choose the section your teacher named.',
+      homeTitle: 'Choose a section',
+      prep: 'Warm-up',
+      mouse: 'Mouse',
+      mouseDesc: 'Click, double click, right button, drag and drop',
+      keyboard: 'Keyboard',
+      keyboardDesc: 'Switching to ҚАЗ, Kazakh letters, typing a word',
+      desktop: 'Desktop',
+      desktopDesc: 'Creating a folder and a document',
+      teacher: 'For the teacher',
+      teacherDesc: 'Class results',
+      soon: 'Coming soon',
+      notStarted: 'Not done yet',
+      starsAria: '{n} stars out of 3',
+      noStorage: 'This browser does not save results.',
+
+      reset: 'Reset progress',
+      resetTitle: 'Reset progress?',
+      resetText: 'These results will be deleted: {who}. They cannot be restored.',
+      resetYes: 'Yes, delete',
+      resetNo: 'No, keep',
+      resetDone: 'Results deleted. Let’s start again!',
+      exitTitle: 'Leave the exercise?',
+      exitText: 'The result of this attempt will not be saved.',
+      exitYes: 'Yes, leave',
+      exitNo: 'No, continue',
+
+      step: 'Task: {n} / {total}',
+      errors: 'Mistakes: {n}',
+      home: 'Home',
+      repeat: 'Repeat',
+      praise0: 'Well done!',
+      praise1: 'Excellent!',
+      praise2: 'You did it!',
+
+      btnLeft: 'Left button',
+      btnDouble: 'Left button × 2',
+      btnRight: 'Right button',
+      btnHold: 'Hold the left button',
+      stageAria: 'Exercise area',
+      balloon: 'Balloon', folder: 'Folder', monitor: 'Screen', apple: 'Apple', basket: 'Basket',
+
+      clickTitle: 'Click the balloon once',
+      clickRobot: 'Move the pointer to the balloon. Click the left button once.',
+      clickMiss: 'You missed the balloon. Move the pointer right onto it.',
+      clickButton: 'That is the right button. Now click the left one.',
+      clickStrong: 'Look at the yellow arrow! The balloon is there. Click the left button.',
+      dblTitle: 'Quickly click the folder twice',
+      dblRobot: 'Move the pointer to the folder. Click twice quickly: click-click!',
+      dblMiss: 'Move the pointer onto the folder.',
+      dblOne: 'Once is not enough. Click twice: click-click!',
+      dblSlow: 'A little faster! Click-click!',
+      dblButton: 'That is the right button. Click the left one twice.',
+      dblStrong: 'Do not move the mouse. Quickly click the left button twice: click-click!',
+      dblOk: '{praise} The folder is open!',
+      rightTitle: 'Click the screen with the right button',
+      rightRobot: 'Move the pointer to the screen. Click the right button once.',
+      rightMiss: 'Move the pointer onto the screen.',
+      rightButton: 'That is the left button. Now click the right one.',
+      rightStrong: 'Look at the mouse picture: the yellow button is on the right. Click it.',
+      rightOk: '{praise} The menu is open!',
+      dragTitle: 'Put the apple into the basket',
+      dragRobot: 'Press the apple and hold. Move it to the basket and let go.',
+      dragMiss: 'Take the apple first.',
+      dragClick: 'Do not let go of the button. Hold it and move the apple.',
+      dragDrop: 'You did not reach the basket. Keep holding until you reach it.',
+      dragButton: 'That is the right button. Take the apple with the left one.',
+      dragStrong: 'Follow the yellow arrow: hold, move to the basket, let go.',
+      dragOk: '{praise} The apple is in the basket!',
+
+      langTitle: 'Switch the language from «РУС» to «ҚАЗ»',
+      langRobot: 'Click «РУС» at the bottom right.',
+      langMenu: 'Good! Now click the line «ҚАЗ Казахский».',
+      langRus: 'That is «РУС». Choose the line «ҚАЗ».',
+      langStrong: 'Look at the yellow colour: «РУС», then «ҚАЗ Казахский».',
+      langSite: 'That is the site language. The keyboard language is at the bottom right.',
+      langOk: '{praise} The Kazakh letters are here!',
+      langFirst: 'First choose the ҚАЗ language',
+      langAria: 'Keyboard language: {l}. Choose a language',
+      keyboardAria: 'On-screen keyboard',
+      keyAria: 'Key {k}',
+      letterTitle: 'Find the letter «{l}»',
+      letterRobot: 'Find and press the letter «{l}». Look at the green keys.',
+      letterWrong: 'That is «{k}». We are looking for «{l}».',
+      letterStrong: 'The letter «{l}» is yellow now. Press it.',
+      letterOk: '{praise} This is the letter «{l}».',
+      wordTitle: 'Type the word: {w}',
+      wordRobot: 'Press the letters in order. The first one is «{l}».',
+      wordNext: 'Right! Now «{l}».',
+      wordWrong: 'That is «{k}». We need «{l}».',
+      wordOk: 'You did it! The word is ready: {w}.',
+      cellsAria: 'Typed: {v}',
+
+      resultTitle: 'Result: {trainer}',
+      time: 'Time',
+      errorCount: 'Mistakes',
+      st_done: 'Done',
+      st_withErrors: 'With mistakes',
+      st_needHelp: 'Needs help',
+      res_done: 'Excellent! You did it!',
+      res_withErrors: 'Well done! Try once more.',
+      res_needHelp: 'Good try! Call your teacher and repeat it together.',
+
+      /* --- Lesson block --- */
+      lessonMeta: 'Grade 2 · Term 2',
+      lessonTitle: 'Section 3. Multimedia',
+      lesson9: 'Lesson 9. Main parts of the keyboard',
+      lesson10: 'Lesson 10. Writing an algorithm in a text editor',
+      lessonDone: 'Completed: {n} / {total}',
+      videoTitle: 'Watch the video first',
+      videoAria: 'Video: opening a Word document',
+      videoRobot: 'Watch the video carefully. Then we will do the tasks.',
+      videoPlay: 'Watch the video',
+      videoDone: 'Well done! Now let’s go to the tasks.',
+      videoSkip: 'Skip',
+      toTasks: 'Go to the tasks',
+      videoAgain: 'Watch the video again',
+      videoBtn: 'Video',
+      videoClose: 'Back to the task',
+      videoMissing: 'The video did not open. The «video» folder must be next to the index.html file.',
+      tasksTitle: 'Tasks',
+      tasksBack: 'Tasks',
+      tasksRobot: 'Do the tasks in order. You can watch the video again.',
+      levelsTitle: 'Choose a level',
+      levelsBack: 'Levels',
+      levelsRobot: 'Start with level one. The next one opens after it.',
+      levelLocked: 'First level {n}',
+      next: 'Next',
+      lessonKeys: 'Main keys',
+      lessonKeysDesc: 'Space, Enter, Shift, Backspace, Delete',
+      lessonWord: 'Open a Word document',
+      lessonWordDesc: 'Create, name and open a document, change the language',
+      lessonAlgo: 'Type an algorithm',
+      lessonAlgoDesc: 'Make a snowman',
+      typing: 'Typing',
+      typingDesc: '5 levels: from letters to a fairy tale',
+      typing1: 'Level 1',
+      typing1Desc: 'Kazakh letters, space',
+      typing2: 'Level 2',
+      typing2Desc: 'Shift, full stop',
+      typing3: 'Level 3',
+      typing3Desc: 'Enter',
+      typing4: 'Level 4',
+      typing4Desc: 'Backspace, Delete',
+      typing5: 'Level 5',
+      typing5Desc: 'Fairy tale «Мақта қыз бен мысық»',
+
+      /* --- Task 1: main keys --- */
+      kn_Space: 'Space',
+      kLetters: 'Press an alphanumeric key',
+      kLettersRobot: 'Letters and numbers are alphanumeric keys. Press any of them.',
+      kControl: 'Press a control key',
+      kControlRobot: 'The bluish keys are control keys. Press any of them.',
+      kGroupWrong: 'That key is from another group. Try again.',
+      kGroupStrong: 'Press any yellow key.',
+      kFind: 'Find the «{w}» key',
+      kd_Space: 'Space separates words. Press the longest key.',
+      kd_Enter: 'Enter starts a new line. Find it.',
+      kd_Shift: 'Shift helps to type a capital letter. Find it.',
+      kd_Backspace: 'Backspace deletes the letter to the left of the cursor. Find it.',
+      kd_Delete: 'Delete removes the letter to the right of the cursor. Find it.',
+      kQuiz: 'Which key do you need?',
+      q_Space: 'You need to separate two words. Which key will you press?',
+      q_Enter: 'You need to start a new line. Which key will you press?',
+      q_Shift: 'You need a capital letter. Which key will you press?',
+      q_Backspace: 'There is an extra letter to the left of the cursor. Which key will you press?',
+      q_Delete: 'There is an extra letter to the right of the cursor. Which key will you press?',
+      kWrong: 'That is «{k}». We need «{w}».',
+      kQuizWrong: 'That is «{k}». Think again.',
+      kStrong: 'Look at the yellow key: it is «{w}». Press it.',
+      kOk: '{praise} This is «{w}».',
+
+      /* --- Task 2: Word --- */
+      deskAria: 'Training desktop',
+      w1Title: 'Right-click on an empty place',
+      w1Robot: 'Move the pointer to an empty place. Click the right button.',
+      w1Wrong: 'That is the left button. Now click the right one.',
+      w1Icon: 'Click an empty place, not the icon.',
+      w1Strong: 'Look at the mouse picture: the yellow button is on the right. Click it on an empty place.',
+      w1Ok: '{praise} The menu is open!',
+      w2Title: 'Create a Word document',
+      w2Robot: 'Move the pointer to «Создать». Then click «Документ Microsoft Word».',
+      w2Wrong: 'That is «{k}». We need «{w}».',
+      w2Closed: 'The menu closed. No problem, click the right button again.',
+      w2Strong: 'Look at the yellow line: «Создать», then «Документ Microsoft Word».',
+      w2Ok: '{praise} The document has appeared!',
+      w3Title: 'Name the document: алгоритм',
+      w3Robot: 'Press Delete. Type the name: алгоритм. Then press Enter.',
+      w3Same: 'First press Delete, then type a new name.',
+      w3Empty: 'Type a name and press Enter.',
+      w3Strong: 'Click the white line. Type a name and press Enter.',
+      w3Aria: 'Document name',
+      w3Ok: '{praise} The document has a name!',
+      w4Title: 'Open the document with a double click',
+      w4Robot: 'Move the pointer to the document. Click twice quickly: click-click!',
+      w4Miss: 'Move the pointer onto the document.',
+      w4One: 'One click will not open it. Click-click!',
+      w4Strong: 'Go to the yellow document. Do not move the mouse and quickly click twice: click-click!',
+      w4Ok: '{praise} Word is open!',
+      w5Miss: 'Click «РУС» at the bottom right.',
+      w6StrongKaz: 'The letter «{l}» is in the top row, where the numbers are.',
+      w6Strong: 'Take your time. Find the letter «{l}» on the keyboard.',
+      w6Ok: 'You did it! Now you can type in Kazakh.',
+
+      /* --- Task 3 and levels: typing --- */
+      paperAria: 'Typing page',
+      paperName: '{doc} — Word',
+      tyTitle: 'Type the text',
+      algoTitle: 'Type the algorithm: Қардан адам жаса',
+      taleTitle: 'Type the fairy tale: Мақта қыз бен мысық',
+      algoRobot: 'Type every step on a new line. Press Enter at the end of the line.',
+      ty1Robot: 'Switch the language to ҚАЗ. Press Space between the words.',
+      ty2Robot: 'Hold Shift for a capital letter. Put a full stop at the end.',
+      ty3Robot: 'Press Enter at the end of the line.',
+      ty5Robot: 'Type the fairy tale. If you make a mistake, press Backspace.',
+      tyWrong: 'That is «{k}». We need «{w}».',
+      tyWrongBack: 'Wrong letter. Press Backspace, then «{w}».',
+      tyBack: 'First delete the red letter with Backspace.',
+      tyShift: 'You need a capital letter. Hold Shift and press «{w}».',
+      tyLower: 'You need a small letter. Release Shift and press «{w}».',
+      tyCaps: 'Caps Lock is on. Press it once.',
+      tyLang: 'The computer uses another language. Choose ҚАЗ at the bottom right of the screen.',
+      tyStrong: 'Look at the yellow key: «{w}». Press it.',
+      tyGo: 'Right! Go on.',
+      fxB: 'Delete the red letter with Backspace',
+      fxD: 'Delete the red letter with Delete',
+      fxBRobot: 'Put the cursor to the right of the red letter. Press Backspace.',
+      fxDRobot: 'Put the cursor to the left of the red letter. Press Delete.',
+      fxKey: 'Now you need the «{w}» key.',
+      fxNot: 'This letter is needed. Put the cursor next to the red letter.',
+      fxType: 'Do not type new letters. Delete the red letter.',
+      fxGoal: 'Correct: {w}',
+
+      /* --- Teacher panel --- */
+      enter: 'Enter',
+      save: 'Save',
+      cancel: 'Cancel',
+      close: 'Close',
+      pinEnter: 'Enter your PIN',
+      pinCreate: 'Choose a new PIN',
+      pinNew: 'New PIN',
+      pinRepeat: 'Repeat the PIN',
+      pinRule: 'The PIN has 4–8 digits.',
+      pinDiffer: 'The PINs do not match.',
+      pinWrong: 'Wrong PIN. Try again.',
+      pinChange: 'Change PIN',
+      pinSaved: 'The new PIN is saved.',
+      tab_results: 'Results',
+      tab_settings: 'Settings',
+      tab_google: 'Google Sheet',
+      tpExit: 'Exit',
+      tpAll: 'All',
+      tpNoClass: 'No class',
+      whoRobotPc: 'Hello! I am Bakontai. Choose your computer number.',
+      whoErrorPc: 'Choose your computer number',
+      tpDemo: 'Demo: the results of this class are made up. In a real lesson they go to the Google Sheet by themselves.',
+      tpHere: 'These are the results of this computer. The whole class is in the Google Sheet.',
+      tpEmpty: 'No results yet.',
+      tpPupil: 'Pupil',
+      tpVideo_watched: 'watched',
+      tpVideo_skipped: 'skipped',
+      tpCell: 'mistakes: {e} · {time}',
+      tpCsv: 'Save for Excel',
+      tpClear: 'Clear the log',
+      tpClearTitle: 'Clear the log?',
+      tpClearText: 'The results of all pupils on this computer will be deleted, records: {n}. They cannot be restored.',
+      tpNoLog: 'The full history of this pupil was not saved.',
+      tpWhen: 'Date',
+      tpTask: 'Task',
+      tpStars: 'Stars',
+      tpStatus: 'Status',
+      tpAttempt: 'Attempt',
+      tpClass: 'Class',
+      tpPc: 'Computer',
+      tpName: 'Name',
+      tpClassTag: 'Class: {c}',
+      tpClassNow: 'Class in this lesson',
+      tpClassNote: 'Choose the class before the lesson. The choice works on this computer only.',
+      tpClassNoteOn: 'Choose the class: it changes on all computers within a minute.',
+      tpAddClass: 'Add a class',
+      tpDelClass: 'Remove class {c} from the list',
+      tpClassSent: 'Class {c} was sent to the Google Sheet.',
+      tpClassNotSent: 'The class changed on this computer only: no connection to the Google Sheet.',
+      tpThisPc: 'Number of this computer',
+      tpThisPcNote: 'If a pupil types only a name, the result is sent with this number.',
+      tpUrl: 'Google Sheet address',
+      tpUrlSave: 'Save and check',
+      tpUrlBad: 'Wrong address. It starts with https://script.google.com/macros/s/ and ends with /exec.',
+      tpUrlOff: 'Sending to the Google Sheet is off.',
+      tpSyncOff: 'Off now: results are kept on this computer only.',
+      tpSync: 'Waiting to be sent: {n}. Last sent: {last}.',
+      tpSendNow: 'Send now',
+      tpTesting: 'Checking the connection…',
+      tpTestOk: 'The Google Sheet is connected. Results were sent.',
+      tpTestBad: 'No connection. Check the internet and the address. Results are saved and will be sent later.',
+      tpFile: 'Shared settings for all computers',
+      tpFileNote: 'Save settings.js and put it next to index.html on every computer. It holds the classes, the address and the PIN.',
+      tpFileSave: 'Save settings.js',
+      gTitle: 'How to connect a Google Sheet',
+      g1: 'Open a new Google Sheet: sheets.new',
+      g2: 'Open Extensions → Apps Script. Delete what is there and paste the code below. Save.',
+      g3: 'Choose the setup function at the top and press Run. Allow access for your account.',
+      g4: 'Deploy → New deployment → type: Web app.',
+      g5: 'Execute as: Me. Who has access: Anyone. Press Deploy.',
+      g6: 'Copy the address that ends with /exec and paste it on the Settings tab. Press Save and check.',
+      g7: 'Save settings.js and copy it to all computers.',
+      gCode: 'Code for the Google Sheet',
+      gCopy: 'Copy the code',
+      gCopied: 'Copied',
+      gCopyHand: 'The code is selected. Press Ctrl+C.',
+      gPrivacy: 'The sheet receives the class, the computer number and the result. The child’s name is not sent. Do not show the address to children or online: anyone who knows it can add records to the sheet.'
     }
   };
 
@@ -1689,6 +2029,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
   const app = document.getElementById('app');
   let session = null;   // идущий тренажёр
   let modalOpen = false;
+  let activeVideo = null; // открытое видео урока
 
   function setLang(lang) {
     Store.data.lang = lang;
@@ -1697,6 +2038,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
     header.querySelectorAll('.lang button').forEach(function (b) {
       b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang));
     });
+    switchVideoLang();
     if (session && session.onSiteLang) session.onSiteLang();
   }
 
@@ -1710,7 +2052,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
       }, h('span', { t: ['whoChip', { who: whoLabel }] }), h('u', { t: ['change'] })));
     }
     const group = h('div', { class: 'lang', role: 'group', aria: ['siteLang'] }, h('span', { t: ['siteLang'] }));
-    [['kk', 'ҚАЗ', 'langKkAria'], ['ru', 'РУС', 'langRuAria']].forEach(function (l) {
+    [['kk', 'ҚАЗ', 'langKkAria'], ['ru', 'РУС', 'langRuAria'], ['en', 'ENG', 'langEnAria']].forEach(function (l) {
       group.append(h('button', {
         type: 'button', 'data-lang': l[0], text: l[1], aria: [l[2]],
         'aria-pressed': String(Store.data.lang === l[0]),
@@ -1901,7 +2243,7 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
 
   /* --- Видео урока --- */
   function videoPlayer(onEnd) {
-    const video = h('video', { src: LESSON.video, controls: true, preload: 'metadata', playsinline: true, aria: ['videoAria'] });
+    const video = h('video', { src: videoFile(), controls: true, preload: 'metadata', playsinline: true, aria: ['videoAria'] });
     const cover = h('button', {
       class: 'video-cover', type: 'button',
       on: { click: function () { const p = video.play(); if (p && p.catch) p.catch(function () { /* причину покажет событие error */ }); } }
@@ -1909,11 +2251,23 @@ button.card:active { transform: translateY(5px); box-shadow: 0 3px 0 var(--teal)
     const box = h('div', { class: 'video-box' }, video, cover);
     video.addEventListener('play', function () { cover.remove(); video.focus({ preventScroll: true }); });
     video.addEventListener('ended', function () { if (onEnd) onEnd(); });
+    activeVideo = { video: video, box: box, cover: cover };
     video.addEventListener('error', function () {
+      // нет видео на этом языке — показываем казахское
+      if (!video.getAttribute('src').endsWith(LESSON.video.kk)) { video.src = LESSON.video.kk; return; }
       box.textContent = '';
       box.append(h('p', { class: 'video-miss', t: ['videoMissing'] }));
     });
     return { box: box, video: video };
+  }
+
+  // Сменили язык сайта, пока открыто видео: ставим видео на новом языке с начала
+  function switchVideoLang() {
+    const a = activeVideo;
+    if (!a || !a.video.isConnected || a.video.getAttribute('src') === videoFile()) return;
+    a.video.pause();
+    a.video.src = videoFile();
+    if (!a.cover.isConnected) a.box.append(a.cover);
   }
 
   function showVideo() {
@@ -3882,7 +4236,7 @@ function answer_(obj) {
   /* =====================================================================
      16. ЗАПУСК
      ===================================================================== */
-  I18N.kk.whoChip = I18N.ru.whoChip = '{who}'; // имя/номер без перевода
+  I18N.kk.whoChip = I18N.ru.whoChip = I18N.en.whoChip = '{who}'; // имя/номер без перевода
   Store.load();
   document.documentElement.lang = Store.data.lang;
   dropForeignPupil();
